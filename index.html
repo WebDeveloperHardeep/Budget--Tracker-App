@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:100,300,400,600"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <link
+    href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+    rel="stylesheet"
+    type="text/css"
+  />
+  <link rel="icon" href="favicon/images.jpg" type="image/x-icon" />
+  <link type="text/css" rel="stylesheet" href="style.css" />
+  <title>Budget Tracker</title>
+</head>
+<body>
+  <div class="header">
+    <div class="budget-info">
+      <div class="budget-title">
+        Available Balance Budget in
+        <span class="budget-title-month">Month</span>:
+      </div>
+      <div class="budget-value">+ 0</div>
+      <div class="budget-income clearfix">
+        <div class="budget-income-text">Total Budget</div>
+        <div class="right">
+          <div class="budget-income-value">+ 0</div>
+        </div>
+      </div>
+      <div class="budget-expenses clearfix">
+        <div class="budget-expenses-text">Expenses</div>
+        <div class="right clearfix">
+          <div class="budget-expenses-value">- 0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="income-section">
+      <h2 class="section-title income-title">Set Your Budget</h2>
+      <div class="add-container-income">
+        <input type="number" class="add-value" placeholder="Amount" />
+        <input type="submit" class="add-btn" value="Set Budget" />
+      </div>
+    </div>
+    <div class="expenses-section">
+      <h2 class="section-title expenses-title">Expenses</h2>
+      <div class="add-container-expense">
+        <input type="number" class="add-value" placeholder="Amount" /> <br />
+        <br />
+        <input type="text" class="add-category" placeholder="Category" />
+        <br />
+        <br />
+        <input type="date" class="add-date" placeholder="Date" /> <br />
+        <br />
+        <input type="submit" class="add-btn" value="Add Expense" />
+      </div>
+      <div class="add-container-filter">
+        <h2 class="section-title filter-title">Filter</h2>
+        <input
+          type="text"
+          class="filter-category"
+          placeholder="Filter by category"
+        />
+        <br />
+        <br />
+      </div>
+      <div class="expenses-list">
+        <h1>Expenses List</h1>
+      </div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

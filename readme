@@ -1,0 +1,174 @@
+let updatedBalance = document.querySelector(".budget-value"); // Updated balance display element
+let budgetExpenses = document.querySelector(".budget-expenses-value"); // Expenses total display element
+let setBudgetBtn = document.querySelector(".income-section .add-btn"); // Set budget button
+let addExpenseBtn = document.querySelector(".expenses-section .add-btn"); // Add expense button
+let balanceAmount = 0; // Initial balance
+let expensesList = []; // Array to store expenses
+
+// Function to format number with commas
+function formatNumberWithCommas(num) {
+  return num.toLocaleString();
+}
+
+// Function to update budget display
+function updateBudgetDisplay() {
+  updatedBalance.textContent =
+    (balanceAmount >= 0 ? "+ " : "- ") +
+    formatNumberWithCommas(Math.abs(balanceAmount));
+  budgetExpenses.textContent =
+    "- " + formatNumberWithCommas(calculateTotalExpenses());
+}
+
+// Function to calculate total expenses
+function calculateTotalExpenses() {
+  let totalExpenses = 0;
+  expensesList.forEach((expense) => {
+    totalExpenses += expense.amount;
+  });
+  return totalExpenses;
+}
+
+// Function to add expense to the list
+function addExpenseToList(value, category, date) {
+  let expense = {
+    amount: value,
+    category: category,
+    date: date,
+  };
+  expensesList.push(expense);
+  updateBudgetDisplay();
+  updateLocalStorage();
+  displayExpenseItem(expense);
+}
+
+// Function to display expense item
+function displayExpenseItem(expense) {
+  let expenseItem = document.createElement("div");
+  expenseItem.classList.add("item");
+  expenseItem.innerHTML = `
+    <div class="item-category">${expense.category}</div>
+    <div class="right">
+      <div class="item-value"> ${formatNumberWithCommas(expense.amount)}</div>
+      <div class="item-date">${expense.date}</div>
+      <button class="item-delete-btn"><i class="ion-ios-close-outline"></i></button>
+      <button class="item-edit-btn"><i class="ion-ios-compose-outline"></i></button>
+    </div>
+  `;
+
+  // Add delete button event listener
+  expenseItem
+    .querySelector(".item-delete-btn")
+    .addEventListener("click", function () {
+      let index = expensesList.indexOf(expense);
+      if (index !== -1) {
+        balanceAmount += expense.amount;
+        expensesList.splice(index, 1);
+        updateBudgetDisplay();
+        updateLocalStorage();
+        expenseItem.remove();
+      }
+    });
+
+  // Add edit button event listener
+  expenseItem
+    .querySelector(".item-edit-btn")
+    .addEventListener("click", function () {
+      // Populate input fields with expense item values for editing
+      document.querySelector(".expenses-section .add-value").value =
+        expense.amount;
+      document.querySelector(".expenses-section .add-category").value =
+        expense.category;
+      document.querySelector(".expenses-section .add-date").value =
+        expense.date;
+
+      // Remove the item from the list
+      let index = expensesList.indexOf(expense);
+      if (index !== -1) {
+        balanceAmount += expense.amount;
+        expensesList.splice(index, 1);
+        updateBudgetDisplay();
+        updateLocalStorage();
+        expenseItem.remove();
+      }
+    });
+
+  // Add expense item to the list
+  document.querySelector(".expenses-list").appendChild(expenseItem);
+}
+
+// Function to update local storage
+function updateLocalStorage() {
+  localStorage.setItem("expensesList", JSON.stringify(expensesList));
+  localStorage.setItem("balanceAmount", balanceAmount.toString());
+}
+
+// Event listener to set budget
+setBudgetBtn.addEventListener("click", function () {
+  let budgetInput = document.querySelector(".income-section .add-value");
+  let budgetValue = parseFloat(budgetInput.value);
+
+  if (!isNaN(budgetValue)) {
+    balanceAmount = budgetValue;
+    updateBudgetDisplay();
+    updateLocalStorage();
+    budgetInput.value = ""; // Clear input field after setting the budget
+  } else {
+    alert("Please enter a valid budget amount");
+  }
+});
+
+// Event listener to add expense
+addExpenseBtn.addEventListener("click", function () {
+  let expenseValueInput = document.querySelector(
+    ".expenses-section .add-value"
+  );
+  let expenseCategoryInput = document.querySelector(
+    ".expenses-section .add-category"
+  );
+  let expenseDateInput = document.querySelector(".expenses-section .add-date");
+
+  let expenseValue = parseFloat(expenseValueInput.value);
+  let expenseCategory = expenseCategoryInput.value;
+  let expenseDate = expenseDateInput.value;
+
+  if (!isNaN(expenseValue) && expenseCategory !== "" && expenseDate !== "") {
+    // Deduct expense from balance
+    balanceAmount -= expenseValue;
+    updateBudgetDisplay();
+    updateLocalStorage();
+
+    // Add expense to list
+    addExpenseToList(expenseValue, expenseCategory, expenseDate);
+
+    // Clear input fields after adding the expense
+    expenseValueInput.value = "";
+    expenseCategoryInput.value = "";
+    expenseDateInput.value = "";
+  } else {
+    alert("Please fill in all expense fields");
+  }
+});
+
+// Function to initialize from local storage
+function initializeFromLocalStorage() {
+  let storedExpenses = localStorage.getItem("expensesList");
+  let storedBalanceAmount = localStorage.getItem("balanceAmount");
+
+  if (storedExpenses) {
+    expensesList = JSON.parse(storedExpenses);
+    expensesList.forEach((expense) => {
+      displayExpenseItem(expense);
+    });
+  }
+
+  if (storedBalanceAmount) {
+    balanceAmount = parseFloat(storedBalanceAmount);
+  }
+
+  updateBudgetDisplay(); // Update display
+}
+
+
+// Call initialize from local storage on page load
+initializeFromLocalStorage();
+meri local storage me jo expensesList array of object me se jo category name ki key ha os category key se main data filter krwana chata hu meri ul me ko expenseList ka data show ho raha ha main chata hu jab main data ko filter karu toh muje sirf os category da data show ho ui pr jiss category ko main input kiya hoga. or jab maine filter wali input khali shod du toh full expenseList show UI par
